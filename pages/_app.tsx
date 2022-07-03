@@ -1,19 +1,58 @@
-import "../styles/globals.css"
-import type { AppProps } from "next/app"
-import { MantineProvider } from "@mantine/core"
+import { AppProps } from "next/app"
+import Head from "next/head"
+import { MantineProvider, AppShell, Navbar, Header, Text } from "@mantine/core"
+import { QueryClient, QueryClientProvider } from "react-query"
 
-function MyApp({ Component, pageProps }: AppProps) {
+const queryClient = new QueryClient()
+
+export default function App(props: AppProps) {
+  const { Component, pageProps } = props
+
   return (
-    <MantineProvider
-      theme={{
-        // Override any other properties from default theme
-        fontFamily: "Open Sans, sans serif",
-        spacing: { xs: 15, sm: 20, md: 25, lg: 30, xl: 40 },
-      }}
-    >
-      <Component {...pageProps} />
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <Head>
+        <title>Page title</title>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+      </Head>
+
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          /** Put your mantine theme override here */
+          colorScheme: "light",
+        }}
+      >
+        <AppShell
+          padding="md"
+          navbar={
+            <Navbar width={{ base: 300 }} p="xs">
+              <Text size="md">Dashboard</Text>
+              <Text size="md">Trade History</Text>
+            </Navbar>
+          }
+          header={
+            <Header height={60} p="xs">
+              <Text size="lg">Moneybox</Text>
+            </Header>
+          }
+          styles={(theme) => ({
+            main: {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[8]
+                  : theme.colors.gray[0],
+            },
+          })}
+        >
+          {/* Your application here */}
+
+          <Component {...pageProps} />
+        </AppShell>
+      </MantineProvider>
+    </QueryClientProvider>
   )
 }
-
-export default MyApp

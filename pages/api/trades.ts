@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-type Trade = {
+export type Trade = {
   id: string
   date: string
   buySellIndicator: "B" | "S"
