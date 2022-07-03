@@ -1,70 +1,113 @@
-import { Table, LoadingOverlay, Group } from "@mantine/core"
-import type { NextPage } from "next"
+import { LoadingOverlay, Box, Text, Group, Space } from "@mantine/core"
 import axios from "axios"
 import { useQuery } from "react-query"
-import { Trade } from "./api/trades"
+import type { NextPage } from "next"
+import type { Trade } from "./api/trades"
+import {
+  DataGrid,
+  GridColDef,
+  GridRowsProp,
+  GridRenderCellParams,
+} from "@mui/x-data-grid"
+
+const currencyDetails = [
+  {
+    code: "XTZ",
+    symbol: "ꜩ",
+  },
+  {
+    code: "XLM",
+    symbol: "*",
+  },
+  {
+    code: "LTC",
+    symbol: "Ł",
+  },
+  {
+    code: "BTC",
+    symbol: "₿",
+  },
+  {
+    code: "ETH",
+    symbol: "Ξ",
+  },
+  {
+    code: "GBP",
+    symbol: "£",
+  },
+  {
+    code: "USD",
+    symbol: "$",
+  },
+  {
+    code: "EUR",
+    symbol: "€",
+  },
+]
 
 const fetchTradeHistory = async () => {
   const { data } = await axios.get<Trade[]>("api/trades")
   return data
 }
 
-const cols = [
+const tradesToRows = (trades: Trade[] | undefined): GridRowsProp => {
+  if (!trades) {
+    return []
+  }
+  return trades.map((trade) => {
+    return {
+      id: trade.id,
+      date: trade.date,
+      buySellIndicator: trade.buySellIndicator,
+      Symbol: trade.crypto,
+      crypto: `${trade.amount} ${trade.crypto}`,
+      fiat: `${trade.fiatAmount} ${trade.fiatCurrency}`,
+      fee: `${trade.feeAmount} ${trade.feeCurrency}`,
+    }
+  })
+}
+
+const cols: GridColDef[] = [
   {
-    header: "Date",
+    headerName: "Date",
+    field: "date",
+    width: 200,
   },
   {
-    header: "B/S",
+    headerName: "B/S",
+    field: "buySellIndicator",
+    width: 50,
   },
   {
-    header: "Crypto",
+    headerName: "Crypto",
+    field: "crypto",
+    type: 'number',
+    width: 200,
   },
   {
-    header: "Amount",
+    headerName: "Fiat",
+    field: "fiat",
+    type: 'number',
+    width: 150,
   },
   {
-    header: "Fiat Currency",
-  },
-  {
-    header: "Fiat Amount",
-  },
-  {
-    header: "Fee",
+    headerName: "Fee",
+    field: "fee",
+    type: 'number',
+    width: 150,
   },
 ]
 
 const TradeHistory: NextPage = () => {
   const { isLoading, data } = useQuery("trades", fetchTradeHistory)
-  const tableHeader = (
-    <thead>
-      <tr>
-        {cols.map((col, index) => (
-          <th key={index}>{col.header}</th>
-        ))}
-      </tr>
-    </thead>
-  )
-  const rows = data?.map((trade) => (
-    <tr key={trade.id}>
-      <td>{trade.date}</td>
-      <td>{trade.buySellIndicator}</td>
-      <td>{trade.crypto}</td>
-      <td>{trade.amount}</td>
-      <td>{trade.fiatCurrency}</td>
-      <td>{trade.fiatAmount}</td>
-      <td>
-        {trade.feeCurrency} {trade.feeAmount}
-      </td>
-    </tr>
-  ))
 
+  const rows = tradesToRows(data)
   return (
     <Group>
       <LoadingOverlay visible={!!isLoading} />
-      <Table>
-        {tableHeader}
-        <tbody>{rows}</tbody>
-      </Table>
+      <div style={{ height: 600, width: "100%" }}>
+        <DataGrid rows={rows} columns={cols} />
+      </div>
     </Group>
   )
 }
