@@ -11,10 +11,10 @@ const fetchTradeHistory = async () => {
 
 const TradeHistory: NextPage = () => {
   const { isLoading, data } = useQuery("trades", fetchTradeHistory)
-
+  
   return (
     <Group>
-      <LoadingOverlay visible={isLoading} />
+      <LoadingOverlay visible={!!isLoading} />
       {data?.map((trade) => (
         <Text key={trade.id} size="md">
           {trade.id}
