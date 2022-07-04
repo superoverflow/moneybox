@@ -1,14 +1,10 @@
-import { LoadingOverlay, Box, Text, Group, Space } from "@mantine/core"
+import { LoadingOverlay, Center, Stack, Text } from "@mantine/core"
+import { reduce } from "lodash"
 import axios from "axios"
 import { useQuery } from "react-query"
 import type { NextPage } from "next"
 import type { Trade } from "./api/trades"
-import {
-  DataGrid,
-  GridColDef,
-  GridRowsProp,
-  GridRenderCellParams,
-} from "@mui/x-data-grid"
+import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid"
 
 const currencyDetails = [
   {
@@ -71,7 +67,7 @@ const cols: GridColDef[] = [
   {
     headerName: "Date",
     field: "date",
-    width: 200,
+    width: 250,
   },
   {
     headerName: "B/S",
@@ -81,24 +77,24 @@ const cols: GridColDef[] = [
   {
     headerName: "Crypto",
     field: "symbol",
-    width: 80,
+    width: 100,
   },
   {
     headerName: "Crypto",
     field: "crypto",
-    type: 'number',
-    width: 200,
+    type: "number",
+    width: 150,
   },
   {
     headerName: "Fiat",
     field: "fiat",
-    type: 'number',
+    type: "number",
     width: 150,
   },
   {
     headerName: "Fee",
     field: "fee",
-    type: 'number',
+    type: "number",
     width: 150,
   },
 ]
@@ -107,13 +103,23 @@ const TradeHistory: NextPage = () => {
   const { isLoading, data } = useQuery("trades", fetchTradeHistory)
 
   const rows = tradesToRows(data)
+  const tableWidth =
+    200 +
+    reduce(
+      cols.map((c) => c.width || 100),
+      (acc, elem) => acc + elem,
+      0
+    )
   return (
-    <Group>
-      <LoadingOverlay visible={!!isLoading} />
-      <div style={{ height: 600, width: "100%" }}>
-        <DataGrid rows={rows} columns={cols} />
-      </div>
-    </Group>
+    <Stack>
+      <Text size="md">Crypto Trading History</Text>
+      <Center>
+        <LoadingOverlay visible={!!isLoading} />
+        <div style={{ height: 800, width: tableWidth }}>
+          <DataGrid rows={rows} columns={cols} />
+        </div>
+      </Center>
+    </Stack>
   )
 }
 
