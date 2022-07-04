@@ -1,12 +1,21 @@
 import { AppProps } from "next/app"
+import { Router, useRouter } from "next/router"
 import Head from "next/head"
-import { MantineProvider, AppShell, Navbar, Header, Text } from "@mantine/core"
+import {
+  MantineProvider,
+  AppShell,
+  Navbar,
+  Header,
+  Text,
+  Button,
+} from "@mantine/core"
 import { QueryClient, QueryClientProvider } from "react-query"
 
 const queryClient = new QueryClient()
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props
+  const router = useRouter()
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -29,9 +38,21 @@ export default function App(props: AppProps) {
         <AppShell
           padding="md"
           navbar={
-            <Navbar width={{ base: 300 }} p="xs">
-              <Text size="md">Dashboard</Text>
-              <Text size="md">Trade History</Text>
+            <Navbar width={{ base: 180 }} p="xs">
+              <Button
+                variant="subtle"
+                size="md"
+                onClick={() => router.push("/dashboard")}
+              >
+                Dashboard
+              </Button>
+              <Button
+                variant="subtle"
+                size="md"
+                onClick={() => router.push("/tradeHistory")}
+              >
+                Trade History
+              </Button>
             </Navbar>
           }
           header={
