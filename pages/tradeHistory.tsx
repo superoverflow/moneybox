@@ -59,7 +59,7 @@ const tradesToRows = (trades: Trade[] | undefined): GridRowsProp => {
       id: trade.id,
       date: trade.date,
       buySellIndicator: trade.buySellIndicator,
-      Symbol: trade.crypto,
+      symbol: trade.crypto,
       crypto: `${trade.amount} ${trade.crypto}`,
       fiat: `${trade.fiatAmount} ${trade.fiatCurrency}`,
       fee: `${trade.feeAmount} ${trade.feeCurrency}`,
@@ -77,6 +77,11 @@ const cols: GridColDef[] = [
     headerName: "B/S",
     field: "buySellIndicator",
     width: 50,
+  },
+  {
+    headerName: "Crypto",
+    field: "symbol",
+    width: 80,
   },
   {
     headerName: "Crypto",
