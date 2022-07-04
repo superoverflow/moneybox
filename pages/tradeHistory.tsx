@@ -50,6 +50,7 @@ const tradesToRows = (trades: Trade[] | undefined): GridRowsProp => {
   if (!trades) {
     return []
   }
+  //TODO: calculate averageCost, cummulativePosition
   return trades.map((trade) => {
     return {
       id: trade.id,
@@ -77,7 +78,7 @@ const cols: GridColDef[] = [
   {
     headerName: "Crypto",
     field: "symbol",
-    width: 100,
+    width: 120,
   },
   {
     headerName: "Crypto",
